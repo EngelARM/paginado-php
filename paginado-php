@@ -1,0 +1,60 @@
+//solo presento el codigo para paginar, necesitas acomodarlo respecto a tu sitio 
+$pagTotales=$this->mTotalPages;//total de paginas [agrega tu total de paginas que tienes]
+$pagActual=$this->mReturnedPage;//pagina actual [captura la pagina actual en la que se encuentra el sitio]
+$LimPag=4;//se establece un limite de generar paginas siguientes (limite para paginas anteriores y siguientes) [agrega el limite de paginas a mostrar en el paginado]
+  $pagSigPaginado="";
+  $pagAntPaginado="";
+  $NpagAnt=1;
+  $NpagSig=0;
+  /*paginado siguiente*/
+  $pagResta=$pagTotales-$pagActual-1;//se resta de la pagina actual al total de paginas (el -1 es para colocar el link de "ultima pagina")
+  if($pagResta<$LimPag){//evita que si estamos en la penultima pagina del paginado, no siga generando mas url sobrepasando la ultima pagina
+      $LimPagVerif=0;
+      $LimPagVerif=$pagResta;
+  }else{
+      $LimPagVerif=$LimPag;
+  }
+  $i=1;
+  while( $i<=$LimPagVerif && $pagActual<$pagTotales){//ciclo para generar las url de las paginas siguientes
+      if($pagActual <= $pagTotales){//para ver las proximas paginas
+          if($NpagSig==0){//se añade +1 a la pagina actual cuando el ciclo inicia por primera vez
+              $NpagSig=$pagActual+1;
+          }else{//se incrementa +1 a la url ya generada
+              $NpagSig=$NpagSig+1;  
+          }
+          $pagN=' | <a href="pagina-'.$NpagSig.'.html" class="pageNumber" >'.$NpagSig.'</a>';
+          $pagSigPaginado=$pagSigPaginado.$pagN;
+      }
+  $i++;
+  }
+  /*paginado anterior*/
+  $i=1;
+  while($i<=$pagActual-1 && $i<=$LimPag){//ciclo para generar las url de las paginas anteriores
+      if($NpagAnt==1){//se resta -1 a la pagina actual cuando el ciclo inicia por primera vez
+          $NpagAnt=$pagActual-1;
+      }else{//se resta -1 a la url ya generada
+          $NpagAnt=$NpagAnt-1;
+      }
+      $pagN='<a href="pagina-'.$NpagAnt.'.html" class="pageNumber">'.$NpagAnt.'</a> | ';
+      $pagAntPaginado=$pagN.$pagAntPaginado;
+  $i++;
+  }
+  /*urls primer y ultima pagina del paginado*/
+  if($pagActual==1){//si la pagina actual es la pagina 1 no se muestra "Primer pagina"
+      $Ppagina="";
+  }elseif($pagActual>=$LimPag+2){//se genera "primer pagina" si se encuentra dos paginas mas del limite de paginado
+      $Ppagina='<a href="pagina-1.html" class="pageNumber">Primer página 1</a> | ';
+  }else{
+     $Ppagina=""; 
+  }
+  if($pagTotales==$pagActual){//si la pagina actual es la ultima pagina del paginado no se muestra "Ultima pagina"
+      $Upagina="";
+  }else{
+      $Upagina=' | <a href="pagina-'.$this->mTotalPages.'.html" class="pageNumber">'.$this->mTotalPages.' Ultima página</a>';
+  }
+/*mostramos el resultado final del paginado*/
+echo '
+<div id="paginado" class="pags">                        
+    '.$Ppagina.' '.$pagAntPaginado.' Página '.$this->mReturnedPage.' '.$pagSigPaginado.' '.$Upagina.
+'</div> 
+';
